@@ -696,6 +696,8 @@ export class Model<T = any> extends QueryBuilder<T> {
 
 		const pivot = Model.query();
 		pivot.setCollection(collection);
+		pivot.setConnection(this.$connection);
+		pivot.setDatabaseName(this.$databaseName);
 
 		if (!foreignPivotKey)
 			foreignPivotKey = (this.constructor.name.toLowerCase() +

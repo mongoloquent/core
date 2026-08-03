@@ -1,6 +1,6 @@
 {
 	"name": "mongoloquent",
-	"version": "3.11.0",
+	"version": "3.12.0",
 	"description": "Mongoloquent is a lightweight MongoDB ORM library for Javascript/Typescript",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

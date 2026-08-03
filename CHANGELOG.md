@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.12.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.11.0...v3.12.0) (2026-08-03)
+
+### Features
+
+- set connection and database name in pivot model ([986c0ed](https://github.com/ajatdarojat45/mongoloquent/commit/986c0ede474d269f8bdfee3c5ef37db6b872ae05))
+
 ## [3.11.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.10.0...v3.11.0) (2026-06-25)
 
 ### Features

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.13.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.12.0...v3.13.0) (2026-08-04)
+
+### Features
+
+- implement morph-to relationship methods for firstOrNew, firstOrCreate, updateOrCreate, save, and saveMany ([6c4c6dc](https://github.com/ajatdarojat45/mongoloquent/commit/6c4c6dcf09e2eb98d7ab743f5fdfd0870869af04))
+
 ## [3.12.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.11.0...v3.12.0) (2026-08-03)
 
 ### Features

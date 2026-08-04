@@ -4,9 +4,10 @@ import {
 	QueryBuilder,
 	IQueryBuilderPaginated,
 	IRelationshipMorphTo,
+	IQueryBuilderFormSchema,
 } from "../index";
 import { LookupBuilder } from "./lookup-builder.relationship";
-import { Document } from "mongodb";
+import { BulkWriteOptions, Document, InsertOneOptions, ObjectId, WithId } from "mongodb";
 
 export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 	public model: Model<T>;
@@ -29,6 +30,90 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 		this.setUseSoftDelete(relatedModel["$useSoftDelete"]);
 		this.setUseTimestamps(relatedModel["$useTimestamps"]);
 		this.setIsDeleted(relatedModel["$isDeleted"]);
+	}
+
+	public firstOrNew(
+		filter: Partial<IQueryBuilderFormSchema<M>>,
+		doc?: Partial<IQueryBuilderFormSchema<M>>,
+		options?: InsertOneOptions,
+	): Promise<M> {
+		const _filter = {
+			...filter,
+			[this.morphType]: this.model.constructor.name,
+			[this.morphId]: (this.model["$original"] as any)["_id"],
+		} as IQueryBuilderFormSchema<M>;
+		return super.firstOrNew(_filter, doc, options);
+	}
+
+	public firstOrCreate(
+		filter: Partial<IQueryBuilderFormSchema<M>>,
+		doc?: Partial<IQueryBuilderFormSchema<M>>,
+		options?: InsertOneOptions,
+	): Promise<M> {
+		const _filter = {
+			...filter,
+			[this.morphType]: this.model.constructor.name,
+			[this.morphId]: (this.model["$original"] as any)["_id"],
+		} as IQueryBuilderFormSchema<M>;
+
+		return super.firstOrCreate(_filter, doc, options);
+	}
+
+	public updateOrCreate(
+		filter: Partial<IQueryBuilderFormSchema<M>>,
+		doc?: Partial<IQueryBuilderFormSchema<M>>,
+		options?: InsertOneOptions,
+	): Promise<M | WithId<IQueryBuilderFormSchema<M>>> {
+		const _filter = {
+			...filter,
+			[this.morphType]: this.model.constructor.name,
+			[this.morphId]: (this.model["$original"] as any)["_id"],
+		} as IQueryBuilderFormSchema<M>;
+
+		return super.updateOrCreate(_filter, doc, options);
+	}
+
+	// @ts-ignore
+	public save(
+		doc: Partial<IQueryBuilderFormSchema<M>>,
+		options?: InsertOneOptions,
+	): Promise<M> {
+		const data = {
+			...doc,
+			[this.morphType]: this.model.constructor.name,
+			[this.morphId]: (this.model["$original"] as any)["_id"],
+		} as IQueryBuilderFormSchema<M>;
+
+		return this.insert(data, options);
+	}
+
+	public saveMany(
+		docs: Partial<IQueryBuilderFormSchema<M>>[],
+		options?: BulkWriteOptions,
+	): Promise<ObjectId[]> {
+		const data = docs.map((doc) => ({
+			...doc,
+			[this.morphType]: this.model.constructor.name,
+			[this.morphId]: (this.model["$original"] as any)["_id"],
+		})) as IQueryBuilderFormSchema<M>[];
+
+		return this.insertMany(data, options);
+	}
+
+	// @ts-ignore
+	public create(
+		doc: Partial<IQueryBuilderFormSchema<M>>,
+		options?: InsertOneOptions,
+	): Promise<M> {
+		return this.save(doc, options);
+	}
+
+	// @ts-ignore
+	public createMany(
+		docs: Partial<IQueryBuilderFormSchema<M>>[],
+		options?: BulkWriteOptions,
+	): Promise<ObjectId[]> {
+		return this.saveMany(docs, options);
 	}
 
 	public all(): Promise<Collection<M>> {
@@ -123,7 +208,7 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 			hidden = hidden.filter(
 				(el) => !makeVisibleArray.map(v => String(v)).includes(String(el)),
 			);
-    }
+		}
 
 		if (hidden.length > 0) {
 			const exclude = LookupBuilder.exclude<T>(hidden, morphTo.alias);

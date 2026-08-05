@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.14.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.13.0...v3.14.0) (2026-08-05)
+
+### Features
+
+- enhance relationship methods to support connection, database name, and timezone settings ([7e0f72d](https://github.com/ajatdarojat45/mongoloquent/commit/7e0f72d5e93aee2ca81b0cdc821eeed99e3953f4))
+
 ## [3.13.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.12.0...v3.13.0) (2026-08-04)
 
 ### Features

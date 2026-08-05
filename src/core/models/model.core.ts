@@ -562,6 +562,10 @@ export class Model<T = any> extends QueryBuilder<T> {
 		localKey?: keyof T,
 	): HasMany<T, M> {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
 
 		if (!foreignKey)
 			foreignKey = (this.constructor.name.toLowerCase() + "Id") as keyof M;
@@ -588,6 +592,10 @@ export class Model<T = any> extends QueryBuilder<T> {
 		localKey?: keyof T,
 	): HasOne<T, M> {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
 
 		if (!foreignKey)
 			foreignKey = (this.constructor.name.toLowerCase() + "Id") as keyof M;
@@ -615,6 +623,10 @@ export class Model<T = any> extends QueryBuilder<T> {
 		ownerKey?: keyof M,
 	): BelongsTo<T, M> {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
 
 		if (!foreignKey)
 			foreignKey = (relation.constructor.name.toLowerCase() + "Id") as keyof T;
@@ -644,7 +656,16 @@ export class Model<T = any> extends QueryBuilder<T> {
 		localKeyThrough: keyof TM = "_id" as keyof TM,
 	): HasManyThrough<T, M, TM> {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
+
 		const through = new throughModel();
+		const ThroughModel = throughModel as unknown as typeof Model;
+		if (ThroughModel.$connection) through.setConnection(ThroughModel.$connection);
+		if (ThroughModel.$databaseName) through.setDatabaseName(ThroughModel.$databaseName);
+		if (ThroughModel.$timezone) through.setTimezone(ThroughModel.$timezone);
 
 		if (!foreignKey)
 			foreignKey = (this.constructor.name.toLowerCase() + "Id") as keyof TM;
@@ -687,6 +708,11 @@ export class Model<T = any> extends QueryBuilder<T> {
 		relatedKey: keyof M = "_id" as keyof M,
 	): BelongsToMany<T, M, TM> {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
+
 		const names = [
 			this.constructor.name.toLowerCase(),
 			relation.constructor.name.toLowerCase(),
@@ -734,6 +760,11 @@ export class Model<T = any> extends QueryBuilder<T> {
 
 	public morphMany<M>(model: new () => Model<M>, name: string) {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
+
 		const morphMany: IRelationshipMorphMany<M> = {
 			type: IRelationshipTypes.morphMany,
 			model: this,
@@ -752,6 +783,11 @@ export class Model<T = any> extends QueryBuilder<T> {
 
 	public morphTo<M>(model: new () => Model<M>, name: string) {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
+
 		const morphTo: IRelationshipMorphTo<M> = {
 			type: IRelationshipTypes.morphTo,
 			model: this,
@@ -770,6 +806,10 @@ export class Model<T = any> extends QueryBuilder<T> {
 
 	public morphToMany<M>(model: new () => Model<M>, name: string) {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
 
 		const morphToMany: IRelationshipMorphToMany<M> = {
 			type: IRelationshipTypes.morphToMany,
@@ -790,6 +830,10 @@ export class Model<T = any> extends QueryBuilder<T> {
 
 	public morphedByMany<M>(model: new () => Model<M>, name: string) {
 		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
 
 		const morphedByMany: IRelationshipMorphedByMany<M> = {
 			type: IRelationshipTypes.morphedByMany,

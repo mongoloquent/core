@@ -7,7 +7,7 @@ import {
 	HasOne,
 	MorphedByMany,
 	MorphMany,
-	MorphTo,
+	MorphOne,
 	MorphToMany,
 } from "../relationships";
 
@@ -17,7 +17,7 @@ export enum IRelationshipTypes {
 	hasMany = "hasMany",
 	belongsToMany = "belongsToMany",
 	hasManyThrough = "hasManyThrough",
-	morphTo = "morphTo",
+	morphOne = "morphOne",
 	morphMany = "morphMany",
 	morphToMany = "morphToMany",
 	morphedByMany = "morphedByMany",
@@ -93,8 +93,8 @@ export interface IRelationshipBelongsToMany<T> {
 	nested?: string[];
 }
 
-export interface IRelationshipMorphTo<T> {
-	type: IRelationshipTypes.morphTo;
+export interface IRelationshipMorphOne<T> {
+	type: IRelationshipTypes.morphOne;
 	model: Model;
 	relatedModel: Model<T>;
 	morph: string;
@@ -157,7 +157,7 @@ export type ExtractRelationshipType<T, K extends keyof T> = T[K] extends (
 					? R
 					: T[K] extends (...args: any[]) => MorphMany<any, infer R>
 						? R
-						: T[K] extends (...args: any[]) => MorphTo<any, infer R>
+						: T[K] extends (...args: any[]) => MorphOne<any, infer R>
 							? R
 							: T[K] extends (...args: any[]) => MorphToMany<any, infer R>
 								? R

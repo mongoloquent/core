@@ -21,15 +21,15 @@ import {
 	BelongsTo,
 	BelongsToMany,
 	IRelationshipMorphMany,
-	IRelationshipMorphTo,
 	IRelationshipMorphToMany,
 	IRelationshipMorphedByMany,
 	MorphedByMany,
 	MorphMany,
-	MorphTo,
+	MorphOne,
 	MorphToMany,
 	RelationshipKeys,
 	ExtractRelationshipType,
+	IRelationshipMorphOne,
 } from "../../index";
 import { QueryBuilder } from "../query-builders";
 
@@ -781,15 +781,15 @@ export class Model<T = any> extends QueryBuilder<T> {
 		return new MorphMany<T, M>(this, relation, name);
 	}
 
-	public morphTo<M>(model: new () => Model<M>, name: string) {
+	public morphOne<M>(model: new () => Model<M>, name: string) {
 		const relation = new model();
 		const RelatedModel = model as unknown as typeof Model;
 		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
 		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
 		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
 
-		const morphTo: IRelationshipMorphTo<M> = {
-			type: IRelationshipTypes.morphTo,
+		const morphOne: IRelationshipMorphOne<M> = {
+			type: IRelationshipTypes.morphOne,
 			model: this,
 			relatedModel: relation,
 			morph: name,
@@ -798,10 +798,10 @@ export class Model<T = any> extends QueryBuilder<T> {
 			alias: this.getAlias(),
 			options: this.getOptions(),
 		};
-		const lookups = MorphTo.generate<M>(morphTo);
+		const lookups = MorphOne.generate<M>(morphOne);
 		this.setLookups([...this.getLookups(), ...lookups]);
 
-		return new MorphTo<T, M>(this, relation, name);
+		return new MorphOne<T, M>(this, relation, name);
 	}
 
 	public morphToMany<M>(model: new () => Model<M>, name: string) {
@@ -968,7 +968,7 @@ export class Model<T = any> extends QueryBuilder<T> {
 			model instanceof BelongsToMany ||
 			model instanceof HasManyThrough ||
 			model instanceof MorphMany ||
-			model instanceof MorphTo ||
+			model instanceof MorphOne ||
 			model instanceof MorphToMany ||
 			model instanceof MorphedByMany
 		);

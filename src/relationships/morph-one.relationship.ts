@@ -3,13 +3,13 @@ import {
 	Model,
 	QueryBuilder,
 	IQueryBuilderPaginated,
-	IRelationshipMorphTo,
+	IRelationshipMorphOne,
 	IQueryBuilderFormSchema,
 } from "../index";
 import { LookupBuilder } from "./lookup-builder.relationship";
 import { BulkWriteOptions, Document, InsertOneOptions, ObjectId, WithId } from "mongodb";
 
-export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
+export class MorphOne<T = any, M = any> extends QueryBuilder<M> {
 	public model: Model<T>;
 	public relatedModel: Model<M>;
 	public morph: string;
@@ -74,10 +74,7 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 	}
 
 	// @ts-ignore
-	public save(
-		doc: Partial<IQueryBuilderFormSchema<M>>,
-		options?: InsertOneOptions,
-	): Promise<M> {
+	public save(doc: Partial<IQueryBuilderFormSchema<M>>, options?: InsertOneOptions): Promise<M> {
 		const data = {
 			...doc,
 			[this.morphType]: this.model.constructor.name,
@@ -91,7 +88,7 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 		docs: Partial<IQueryBuilderFormSchema<M>>[],
 		options?: BulkWriteOptions,
 	): Promise<ObjectId[]> {
-		const data = docs.map((doc) => ({
+		const data = docs.map(doc => ({
 			...doc,
 			[this.morphType]: this.model.constructor.name,
 			[this.morphId]: (this.model["$original"] as any)["_id"],
@@ -101,10 +98,7 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 	}
 
 	// @ts-ignore
-	public create(
-		doc: Partial<IQueryBuilderFormSchema<M>>,
-		options?: InsertOneOptions,
-	): Promise<M> {
+	public create(doc: Partial<IQueryBuilderFormSchema<M>>, options?: InsertOneOptions): Promise<M> {
 		return this.save(doc, options);
 	}
 
@@ -146,30 +140,22 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 		return super.count();
 	}
 
-	public async sum<K extends keyof M>(
-		field: K | (string & {}),
-	): Promise<number> {
+	public async sum<K extends keyof M>(field: K | (string & {})): Promise<number> {
 		await this.setDefaultCondition();
 		return super.sum(field);
 	}
 
-	public async min<K extends keyof M>(
-		field: K | (string & {}),
-	): Promise<number> {
+	public async min<K extends keyof M>(field: K | (string & {})): Promise<number> {
 		await this.setDefaultCondition();
 		return super.min(field);
 	}
 
-	public async max<K extends keyof M>(
-		field: K | (string & {}),
-	): Promise<number> {
+	public async max<K extends keyof M>(field: K | (string & {})): Promise<number> {
 		await this.setDefaultCondition();
 		return super.max(field);
 	}
 
-	public async avg<K extends keyof M>(
-		field: K | (string & {}),
-	): Promise<number> {
+	public async avg<K extends keyof M>(field: K | (string & {})): Promise<number> {
 		await this.setDefaultCondition();
 		return super.avg(field);
 	}
@@ -181,15 +167,12 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 		);
 	}
 
-	static generate<T>(morphTo: IRelationshipMorphTo<T>): Document[] {
+	static generate<T>(morphTo: IRelationshipMorphOne<T>): Document[] {
 		const lookup = this.lookup<T>(morphTo);
 		let hidden = morphTo.relatedModel.getHidden();
 
 		if (morphTo.options?.select) {
-			const select = LookupBuilder.select<T>(
-				morphTo.options.select,
-				morphTo.alias,
-			);
+			const select = LookupBuilder.select<T>(morphTo.options.select, morphTo.alias);
 			lookup.push(...select);
 		}
 
@@ -205,9 +188,7 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 				? morphTo.options.makeVisible
 				: [morphTo.options.makeVisible];
 
-			hidden = hidden.filter(
-				(el) => !makeVisibleArray.map(v => String(v)).includes(String(el)),
-			);
+			hidden = hidden.filter(el => !makeVisibleArray.map(v => String(v)).includes(String(el)));
 		}
 
 		if (hidden.length > 0) {
@@ -218,7 +199,7 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 		return lookup;
 	}
 
-	static lookup<T>(morphTo: IRelationshipMorphTo<T>): Document[] {
+	static lookup<T>(morphTo: IRelationshipMorphOne<T>): Document[] {
 		const alias = morphTo.alias || "alias";
 		const lookup: Document[] = [{ $project: { alias: 0 } }];
 		const pipeline: Document[] = [];
@@ -250,7 +231,7 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 			});
 		}
 
-		morphTo.model["$nested"].forEach((el) => {
+		morphTo.model["$nested"].forEach(el => {
 			if (typeof morphTo.relatedModel[el] === "function") {
 				morphTo.relatedModel["$alias"] = el;
 				const nested = morphTo.relatedModel[el]();

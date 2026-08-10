@@ -3,13 +3,13 @@ import {
 	Model,
 	QueryBuilder,
 	IQueryBuilderPaginated,
+	IRelationshipMorphOne,
 	IQueryBuilderFormSchema,
-	IRelationshipMorphTo,
 } from "../index";
 import { LookupBuilder } from "./lookup-builder.relationship";
 import { BulkWriteOptions, Document, InsertOneOptions, ObjectId, WithId } from "mongodb";
 
-export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
+export class MorphOne<T = any, M = any> extends QueryBuilder<M> {
 	public model: Model<T>;
 	public relatedModel: Model<M>;
 	public morph: string;
@@ -167,50 +167,52 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 		);
 	}
 
-	static generate<T>(morphTo: IRelationshipMorphTo<T>): Document[] {
-		const lookup = this.lookup<T>(morphTo);
-		let hidden = morphTo.relatedModel.getHidden();
+	static generate<T>(morphOne: IRelationshipMorphOne<T>): Document[] {
+		const lookup = this.lookup<T>(morphOne);
+		let hidden = morphOne.relatedModel.getHidden();
 
-		if (morphTo.options?.select) {
-			const select = LookupBuilder.select<T>(morphTo.options.select, morphTo.alias);
+		if (morphOne.options?.select) {
+			const select = LookupBuilder.select<T>(morphOne.options.select, morphOne.alias);
 			lookup.push(...select);
 		}
 
-		if (morphTo.options?.exclude) {
-			const excludeArray = Array.isArray(morphTo.options.exclude)
-				? morphTo.options.exclude
-				: [morphTo.options.exclude];
+		if (morphOne.options?.exclude) {
+			const excludeArray = Array.isArray(morphOne.options.exclude)
+				? morphOne.options.exclude
+				: [morphOne.options.exclude];
 			hidden.push(...excludeArray);
 		}
 
-		if (morphTo.options.makeVisible) {
-			const makeVisibleArray = Array.isArray(morphTo.options.makeVisible)
-				? morphTo.options.makeVisible
-				: [morphTo.options.makeVisible];
+		if (morphOne.options.makeVisible) {
+			const makeVisibleArray = Array.isArray(morphOne.options.makeVisible)
+				? morphOne.options.makeVisible
+				: [morphOne.options.makeVisible];
 
 			hidden = hidden.filter(el => !makeVisibleArray.map(v => String(v)).includes(String(el)));
 		}
 
 		if (hidden.length > 0) {
-			const exclude = LookupBuilder.exclude<T>(hidden, morphTo.alias);
+			const exclude = LookupBuilder.exclude<T>(hidden, morphOne.alias);
 			lookup.push(...exclude);
 		}
 
 		return lookup;
 	}
 
-	static lookup<T>(morphTo: IRelationshipMorphTo<T>): Document[] {
-		const alias = morphTo.alias || "alias";
+	static lookup<T>(morphOne: IRelationshipMorphOne<T>): Document[] {
+		const alias = morphOne.alias || "alias";
 		const lookup: Document[] = [{ $project: { alias: 0 } }];
 		const pipeline: Document[] = [];
 
-		if (morphTo.relatedModel["$useSoftDelete"]) {
+		if (morphOne.relatedModel["$useSoftDelete"]) {
 			pipeline.push({
 				$match: {
 					$expr: {
 						$and: [
-							{ $eq: [`$${morphTo.relatedModel.getIsDeleted()}`, false] },
-							{ $eq: ["$$morphType", morphTo.relatedModel.constructor.name] },
+							{ $eq: [`$${morphOne.relatedModel.getIsDeleted()}`, false] },
+							{
+								$eq: [`$${morphOne.morphType}`, morphOne.model.constructor.name],
+							},
 						],
 					},
 				},
@@ -220,26 +222,27 @@ export class MorphTo<T = any, M = any> extends QueryBuilder<M> {
 				$match: {
 					$expr: {
 						$and: [
-							{ $eq: ["$$morphType", morphTo.relatedModel.constructor.name] },
+							{
+								$eq: [`$${morphOne.morphType}`, morphOne.model.constructor.name],
+							},
 						],
 					},
 				},
 			});
 		}
 
-		morphTo.model["$nested"].forEach(el => {
-			if (typeof morphTo.relatedModel[el] === "function") {
-				morphTo.relatedModel["$alias"] = el;
-				const nested = morphTo.relatedModel[el]();
+		morphOne.model["$nested"].forEach(el => {
+			if (typeof morphOne.relatedModel[el] === "function") {
+				morphOne.relatedModel["$alias"] = el;
+				const nested = morphOne.relatedModel[el]();
 				pipeline.push(...nested.model.$lookups);
 			}
 		});
 
 		const $lookup = {
-			from: morphTo.relatedModel["$collection"],
-			localField: `${morphTo.morphId}`,
-			foreignField: "_id",
-			let: { morphType: `$${morphTo.morphType}` },
+			from: morphOne.relatedModel["$collection"],
+			localField: "_id",
+			foreignField: `${morphOne.morphId}`,
 			as: alias,
 			pipeline: pipeline,
 		};

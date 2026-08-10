@@ -8,6 +8,7 @@ import {
 	MorphedByMany,
 	MorphMany,
 	MorphOne,
+	MorphTo,
 	MorphToMany,
 } from "../relationships";
 
@@ -19,6 +20,7 @@ export enum IRelationshipTypes {
 	hasManyThrough = "hasManyThrough",
 	morphOne = "morphOne",
 	morphMany = "morphMany",
+	morphTo = "morphTo",
 	morphToMany = "morphToMany",
 	morphedByMany = "morphedByMany",
 }
@@ -117,6 +119,18 @@ export interface IRelationshipMorphMany<T> {
 	nested?: string[];
 }
 
+export interface IRelationshipMorphTo<T> {
+	type: IRelationshipTypes.morphTo;
+	model: Model;
+	relatedModel: Model<T>;
+	morph: string;
+	morphId: string;
+	morphType: string;
+	alias: string;
+	options: IRelationshipOptions<T>;
+	nested?: string[];
+}
+
 export interface IRelationshipMorphToMany<T> {
 	type: IRelationshipTypes.morphToMany;
 	model: Model;
@@ -148,22 +162,24 @@ export type ExtractRelationshipType<T, K extends keyof T> = T[K] extends (
 ) => HasOne<any, infer R>
 	? R
 	: T[K] extends (...args: any[]) => HasMany<any, infer R>
-		? R
-		: T[K] extends (...args: any[]) => BelongsTo<any, infer R>
-			? R
-			: T[K] extends (...args: any[]) => BelongsToMany<any, infer R, any>
-				? R
-				: T[K] extends (...args: any[]) => HasManyThrough<any, infer R, any>
-					? R
-					: T[K] extends (...args: any[]) => MorphMany<any, infer R>
-						? R
-						: T[K] extends (...args: any[]) => MorphOne<any, infer R>
-							? R
-							: T[K] extends (...args: any[]) => MorphToMany<any, infer R>
-								? R
-								: T[K] extends (...args: any[]) => MorphedByMany<any, infer R>
-									? R
-									: any;
+	? R
+	: T[K] extends (...args: any[]) => BelongsTo<any, infer R>
+	? R
+	: T[K] extends (...args: any[]) => BelongsToMany<any, infer R, any>
+	? R
+	: T[K] extends (...args: any[]) => HasManyThrough<any, infer R, any>
+	? R
+	: T[K] extends (...args: any[]) => MorphMany<any, infer R>
+	? R
+	: T[K] extends (...args: any[]) => MorphOne<any, infer R>
+	? R
+	: T[K] extends (...args: any[]) => MorphTo<any, infer R>
+	? R
+	: T[K] extends (...args: any[]) => MorphToMany<any, infer R>
+	? R
+	: T[K] extends (...args: any[]) => MorphedByMany<any, infer R>
+	? R
+	: any;
 
 export type RelationshipKeys<T> = {
 	[K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;

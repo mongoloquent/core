@@ -6,5 +6,6 @@ export * from "./belongs-to.relationship";
 export * from "./belongs-to-many.relationship";
 export * from "./morph-one.relationship";
 export * from "./morph-many.relationship";
+export * from "./morph-to.relationship";
 export * from "./morph-to-many.relationship";
 export * from "./morphed-by-many.relationship";

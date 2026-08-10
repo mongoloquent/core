@@ -30,6 +30,8 @@ import {
 	RelationshipKeys,
 	ExtractRelationshipType,
 	IRelationshipMorphOne,
+	MorphTo,
+	IRelationshipMorphTo,
 } from "../../index";
 import { QueryBuilder } from "../query-builders";
 
@@ -804,6 +806,29 @@ export class Model<T = any> extends QueryBuilder<T> {
 		return new MorphOne<T, M>(this, relation, name);
 	}
 
+	public morphTo<M>(model: new () => Model<M>, name: string) {
+		const relation = new model();
+		const RelatedModel = model as unknown as typeof Model;
+		if (RelatedModel.$connection) relation.setConnection(RelatedModel.$connection);
+		if (RelatedModel.$databaseName) relation.setDatabaseName(RelatedModel.$databaseName);
+		if (RelatedModel.$timezone) relation.setTimezone(RelatedModel.$timezone);
+
+		const morphTo: IRelationshipMorphTo<M> = {
+			type: IRelationshipTypes.morphTo,
+			model: this,
+			relatedModel: relation,
+			morph: name,
+			morphId: `${name}Id`,
+			morphType: `${name}Type`,
+			alias: this.getAlias(),
+			options: this.getOptions(),
+		};
+		const lookups = MorphTo.generate<M>(morphTo);
+		this.setLookups([...this.getLookups(), ...lookups]);
+
+		return new MorphTo<T, M>(this, relation, name);
+	}
+
 	public morphToMany<M>(model: new () => Model<M>, name: string) {
 		const relation = new model();
 		const RelatedModel = model as unknown as typeof Model;
@@ -969,6 +994,7 @@ export class Model<T = any> extends QueryBuilder<T> {
 			model instanceof HasManyThrough ||
 			model instanceof MorphMany ||
 			model instanceof MorphOne ||
+			model instanceof MorphTo ||
 			model instanceof MorphToMany ||
 			model instanceof MorphedByMany
 		);

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.15.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.14.0...v3.15.0) (2026-08-10)
+
+### Features
+
+- add morphTo relationship and related types for polymorphic associations ([d1429d4](https://github.com/ajatdarojat45/mongoloquent/commit/d1429d4016cbabe62425fd0b2b77d2b40ca19902))
+- implement morphOne relationship and update related types and methods ([0789371](https://github.com/ajatdarojat45/mongoloquent/commit/07893715c2285f1bea7927f7f3410134b4aa518f))
+- update TypeScript target to ES2022 in tsconfig.json ([7b7fa4e](https://github.com/ajatdarojat45/mongoloquent/commit/7b7fa4ebf4e484bd83e189ce8f2b64a6eda92ace))
+
 ## [3.14.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.13.0...v3.14.0) (2026-08-05)
 
 ### Features

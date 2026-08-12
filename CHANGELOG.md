@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/mongoloquent/core/compare/v3.15.0...v4.0.0) (2026-08-12)
+
 ## [3.15.0](https://github.com/ajatdarojat45/mongoloquent/compare/v3.14.0...v3.15.0) (2026-08-10)
 
 ### Features

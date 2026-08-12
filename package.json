@@ -1,5 +1,5 @@
 {
-	"name": "mongoloquent",
+	"name": "@mongoloquent/core",
 	"version": "3.15.0",
 	"description": "Mongoloquent is a lightweight MongoDB ORM library for Javascript/Typescript",
 	"main": "dist/index.js",
@@ -37,11 +37,12 @@
 		"mongodb",
 		"orm",
 		"mongoloquent",
-		"nodejs"
+		"nodejs",
+		"core"
 	],
 	"author": {
 		"name": "Ajat Darojat",
-		"email": "ajatdarojat45@gmail.com",
+		"email": "me@ajatdarojat45.id",
 		"url": "https://ajatdarojat45.id"
 	},
 	"license": "MIT",
@@ -74,15 +75,18 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ajatdarojat45/mongoloquent.git"
+		"url": "git+https://github.com/mongoloquent/core.git"
 	},
 	"funding": {
 		"type": "GitHub",
 		"url": "https://github.com/sponsors/ajatdarojat45"
 	},
 	"bugs": {
-		"url": "https://github.com/ajatdarojat45/mongoloquent/issues",
-		"email": "ajatdarojat45@gmail.com"
+		"url": "https://github.com/mongoloquent/core/issues",
+		"email": "me@ajatdarojat45.id"
 	},
-	"homepage": "https://mongoloquent.com"
+	"homepage": "https://mongoloquent.com",
+	"publishConfig": {
+		"access": "public"
+	}
 }

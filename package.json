@@ -1,14 +1,14 @@
 {
-	"name": "@mongoloquent/core",
-	"version": "4.0.0",
-	"description": "Mongoloquent is a lightweight MongoDB ORM library for Javascript/Typescript",
+	"name": "mongoloquent",
+	"version": "3.15.1",
+	"description": "[DEPRECATED] Mongoloquent has moved to @mongoloquent/core",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": [
 		"dist"
 	],
 	"scripts": {
-		"test": "jest --detectOpenHandles --runInBand --verbose  --forceExit --coverage --watchAll",
+		"test": "jest --detectOpenHandles --runInBand --verbose --forceExit --coverage --watchAll",
 		"build": "tsc",
 		"start": "ts-node src/index.ts",
 		"prepublishOnly": "npm run build",
@@ -37,8 +37,7 @@
 		"mongodb",
 		"orm",
 		"mongoloquent",
-		"nodejs",
-		"core"
+		"nodejs"
 	],
 	"author": {
 		"name": "Ajat Darojat",
@@ -47,8 +46,7 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"dayjs": "^1.11.10",
-		"dotenv": "^16.3.2"
+		"@mongoloquent/core": "^4.0.0"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.1",
